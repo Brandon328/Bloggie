@@ -4,6 +4,9 @@
 using Bloggie.Web.Data;
 using Bloggie.Web.Repositories;
 using Microsoft.EntityFrameworkCore;
+using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
+using dotenv.net;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +19,17 @@ builder.Services.AddDbContext<BloggieDbContext>(
 
 builder.Services.AddScoped<ITagRepository, TagRepository>();
 builder.Services.AddScoped<IBlogPostRepository, BlogPostRepository>();
+builder.Services.AddScoped<IImageRepository, CloudinaryImageRepository>();
+
+
+// Set your Cloudinary credentials
+//=================================
+
+DotEnv.Load(options: new DotEnvOptions(probeForEnv: true));
+Cloudinary cloudinary = new Cloudinary(Environment.GetEnvironmentVariable("CLOUDINARY_URL"));
+cloudinary.Api.Secure = true;
+
+builder.Services.AddSingleton(cloudinary);
 
 var app = builder.Build();
 
