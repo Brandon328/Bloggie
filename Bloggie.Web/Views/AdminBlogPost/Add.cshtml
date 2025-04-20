@@ -36,9 +36,24 @@
         </div>
 
         <div class="mb-3">
+            <label class="form-label">Featured Image Upload</label>
+            <input type="file"
+                   id="featuredImgUpload"
+                   class="form-control" />
+        </div>
+
+        <div class="mb-3">
             <label class="form-label">Featured Image URL</label>
-            <input type="text" class="form-control" id="featuredImgUrl"
-                   asp-for="FeaturedImgUrl" />
+            <div class="d-flex align-items-center gap-3">
+                <img src="" id="featuredImgDisplay"
+                     style="
+                        display: none;
+                        width: 200px;"/>
+                <input type="text" class="form-control"
+                       id="featuredImgUrl"
+                       readonly
+                       asp-for="FeaturedImgUrl" />
+            </div>
         </div>
 
         <div class="mb-3">
@@ -85,5 +100,33 @@
 @section Scripts {
     <script>
         var editor = new FroalaEditor('#content');
+
+        const featuredUploadElement = document.getElementById('featuredImgUpload');
+        const featuredImgUrlElement = document.getElementById('featuredImgUrl');
+        const featuredImgDisplayElement = document.getElementById('featuredImgDisplay');
+
+        featuredUploadElement.addEventListener('change', async function (event) {
+            var file = event.target.files[0];
+            var formData = new FormData();
+
+            formData.append('file', file);
+
+            await fetch('/api/images', {
+                method: 'POST',
+                headers: {
+                    'Accept': '*/*',
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                featuredImgUrlElement.value = data.link;
+                featuredImgDisplayElement.src = data.link;
+                featuredImgDisplayElement.style.display = 'block';
+            })
+            .catch(error => console.error('Error:', error));
+
+        });
+
     </script>
 }

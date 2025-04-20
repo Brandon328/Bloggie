@@ -1,8 +1,8 @@
 ﻿using Bloggie.Web.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-
 namespace Bloggie.Web.Controllers
+
 {
     [Route("api/[controller]")]
     [ApiController]

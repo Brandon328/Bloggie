@@ -16,69 +16,92 @@
             <div class="mb-3">
                 <label class="form-label">Id</label>
                 <input type="text" class="form-control" id="id"
-                       asp-for="Id" readonly/>
+                       asp-for="Id" readonly />
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Heading</label>
                 <input type="text" class="form-control" id="heading"
-                asp-for="Heading" />
+                       asp-for="Heading" />
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Page title</label>
                 <input type="text" class="form-control" id="pageTitle"
-                asp-for="PageTitle" />
+                       asp-for="PageTitle" />
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Content</label>
                 <textarea class="form-control" id="content"
-                asp-for="Content"></textarea>
+                          asp-for="Content"></textarea>
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Short Description</label>
                 <input type="text" class="form-control" id="shortDescription"
-                asp-for="ShortDescription" />
+                       asp-for="ShortDescription" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Featured Image Upload</label>
+                <input type="file"
+                       id="featuredImgUpload"
+                       class="form-control" />
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Featured Image URL</label>
-                <input type="text" class="form-control" id="featuredImgUrl"
-                asp-for="FeaturedImgUrl" />
+                <div class="d-flex align-items-center gap-3">
+                    @if (Model.FeaturedImgUrl != null)
+                    {
+                        <img src="@Model.FeaturedImgUrl" id="featuredImgDisplay"
+                             style="width: 200px;" />
+                    }
+                    else
+                    {
+                        <img src="" id="featuredImgDisplay"
+                             style="
+                                display: none;
+                                width: 200px;" />
+                    }
+                    <input type="text" class="form-control"
+                           id="featuredImgUrl"
+                           readonly
+                           asp-for="FeaturedImgUrl" />
+                </div>
             </div>
 
             <div class="mb-3">
                 <label class="form-label">URL Handle</label>
                 <input type="text" class="form-control" id="urlHandle"
-                asp-for="UrlHandle" />
+                       asp-for="UrlHandle" />
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Published Date</label>
                 <input type="date" class="form-control" id="publishedDate"
-                asp-for="PublishedDate" />
+                       asp-for="PublishedDate" />
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Author</label>
                 <input type="text" class="form-control" id="author"
-                asp-for="Author" />
+                       asp-for="Author" />
             </div>
 
             <div class="form-check">
                 <input class="form-check-input"
-                type="checkbox" id="visible"
-                asp-for="Visible" />
+                       type="checkbox" id="visible"
+                       asp-for="Visible" />
                 <label class="form-check-label">Is Visible?</label>
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Tags</label>
                 <select class="form-select"
-                asp-items="@Model.Tags"
-                asp-for="SelectedTags">
+                        asp-items="@Model.Tags"
+                        asp-for="SelectedTags">
                 </select>
             </div>
 
@@ -98,5 +121,30 @@
 @section Scripts {
     <script>
         var editor = new FroalaEditor('#content');
+
+        const featuredUploadElement = document.getElementById('featuredImgUpload');
+        const featuredImgUrlElement = document.getElementById('featuredImgUrl');
+        const featuredImgDisplayElement = document.getElementById('featuredImgDisplay');
+
+        featuredUploadElement.addEventListener('change', async function (event) {
+            var file = event.target.files[0];
+            var formData = new FormData();
+
+            formData.append('file', file);
+
+            await fetch('/api/images', {
+                method: 'POST',
+                headers: {
+                    'Accept': '*/*',
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                featuredImgUrlElement.value = data.link;
+                featuredImgDisplayElement.src = data.link;
+            })
+            .catch(error => console.error('Error:', error));
+        });
     </script>
 }
