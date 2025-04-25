@@ -21,7 +21,8 @@ namespace Bloggie.Web.Repositories
             var uploadParams = new ImageUploadParams()
             {
                 File = new FileDescription(file.FileName, file.OpenReadStream()),
-                DisplayName = file.FileName
+                DisplayName = file.FileName,
+                Folder="/bloggie"
             };
 
             var uploadResult = await _cloudinary.UploadAsync(uploadParams);
