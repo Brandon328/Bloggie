@@ -1,8 +1,6 @@
 ﻿using Bloggie.Web.Data;
 using Bloggie.Web.Models.Domain;
-using Microsoft.AspNetCore.Components.Web;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Metadata;
 
 namespace Bloggie.Web.Repositories
 {
@@ -42,6 +40,11 @@ namespace Bloggie.Web.Repositories
         public async Task<BlogPost?> GetByIdAsync(Guid id)
         => await _dbContext.BlogPost.Include(x=>x.Tags)
             .FirstOrDefaultAsync(x=>x.Id==id);
+
+        public async Task<BlogPost?> GetByUrlHandleAsync(string urlHandle)
+        => await _dbContext.BlogPost
+                .Include(x => x.Tags)
+                .FirstOrDefaultAsync(x => x.UrlHandle == urlHandle);
 
         public async Task<BlogPost?> UpdateAsync(BlogPost updatedBlogPost)
         {
