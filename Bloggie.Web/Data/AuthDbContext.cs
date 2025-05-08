@@ -55,11 +55,13 @@ namespace Bloggie.Web.Data
                 Email = "superadmin@bloggie.com",
                 NormalizedEmail = "superadmin@bloggie.com".ToUpper(),
                 NormalizedUserName = "superadmin@bloggie.com",
+                ConcurrencyStamp = superAdminId,
+                SecurityStamp = superAdminId,
                 Id = superAdminId
             };
 
-            superAdminUser.PasswordHash = 
-                new PasswordHasher<IdentityUser>().HashPassword(superAdminUser, "SuperAdmin@123");
+            superAdminUser.PasswordHash = "$2y$10$BV5GoMkzdW01MR2833HctuYPkNVzgq9cirRcsevuVCX5X1/CQHwQe";
+                //new PasswordHasher<IdentityUser>().HashPassword(superAdminUser, "SuperAdmin@123");
 
             builder.Entity<IdentityUser>().HasData(superAdminUser);
 
